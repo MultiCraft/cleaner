@@ -1,13 +1,8 @@
 local radius = 8
 local height = 4
-local freq = 2
---local kpos = {}
-
-if PLATFORM == "Android" or PLATFORM == "iOS" then
-	radius = 4
-	height = 2
-	freq = 3
-end
+local freq = 3
+local kpos = {}
+local enable_kpos = false
 
 minetest.register_on_joinplayer(function(player)
 	local inv = player:get_inventory()
@@ -37,18 +32,24 @@ local function clean()
 			if not minetest.is_valid_pos(pos_scan) then
 				return
 			end
-		--	local hash = minetest.hash_node_position(pos_scan)
+
 			local nodename = minetest.get_node(pos_scan).name
 
-		--	if not kpos[hash] then
-		--		local nodename = minetest.get_node(pos_scan).name
+			if enable_kpos then
+				local hash = minetest.hash_node_position(pos_scan)
+				if not kpos[hash] then
+					local nodename = minetest.get_node(pos_scan).name
 
+					if not minetest.registered_nodes[nodename] then
+						minetest.remove_node(pos_scan)
+					end
+
+				kpos[hash] = true
+			else
 				if not minetest.registered_nodes[nodename] then
 					minetest.remove_node(pos_scan)
 				end
-
-		--		kpos[hash] = true
-		--	end
+			end
 
 			local objs = minetest.get_objects_inside_radius(pos_scan, 0.5)
 			if #objs > 0 then
