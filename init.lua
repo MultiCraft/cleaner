@@ -29,10 +29,6 @@ local function clean()
 		for y = -height, height do
 		for z = -radius, radius do
 			local pos_scan = vnew(pos.x + x, pos.y + y, pos.z + z)
-			if not minetest.is_valid_pos(pos_scan) then
-				return
-			end
-
 			local nodename = minetest.get_node(pos_scan).name
 
 			if enable_kpos then
@@ -44,7 +40,8 @@ local function clean()
 						minetest.remove_node(pos_scan)
 					end
 
-				kpos[hash] = true
+					kpos[hash] = true
+				end
 			else
 				if not minetest.registered_nodes[nodename] then
 					minetest.remove_node(pos_scan)
